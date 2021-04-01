@@ -31,6 +31,6 @@ app.listen(port, () => {
   console.log('Server started! At http://localhost:' + port);
 });
 
-const sendTokens = require('./API/tokens')
+const {sendTokens} = require('./API/tokens')
 const addr = "0x8c97e535313ed467db86a661f9a79ed6725c2c49"
 sendTokens(addr)
