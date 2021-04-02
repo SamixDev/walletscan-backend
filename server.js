@@ -33,4 +33,4 @@ app.listen(port, () => {
 
 const {sendTokens} = require('./API/tokens')
 const addr = "0x8c97e535313ed467db86a661f9a79ed6725c2c49"
-sendTokens(addr)
+sendTokens(addr,1,"usd")
