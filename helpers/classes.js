@@ -19,10 +19,14 @@ function history(
     timestamp,
     balance,
     quote
-    ) {
+) {
     this.timestamp = timestamp;
     this.balance = balance;
     this.quote = quote;
 }
 
-module.exports = {Tokendata, history}
+// for nfts page
+
+// for transactions page
+
+module.exports = { Tokendata, history }

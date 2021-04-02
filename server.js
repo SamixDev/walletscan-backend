@@ -5,14 +5,7 @@ const app = express();
 const path = require('path');
 const apiResponse = require("./helpers/apiResponse");
 
-// const portfolio = require("./API/portfolio");
-// const tokens = require("./API/tokens");
-// const transactions = require("./API/transactions");
-// const nfts = require("./API/nfts");
-
 // routing APIs
-// app.use('/api/hardware', hardwareAPI);
-// app.use('/api/user', usersAPI);
 app.use(express.json());
 app.use(express.static("pages"));
 
@@ -31,6 +24,7 @@ app.listen(port, () => {
   console.log('Server started! At http://localhost:' + port);
 });
 
-const {sendTokens} = require('./API/tokens')
+// testing
+const sendTokens = require('./API/tokens')
 const addr = "0x8c97e535313ed467db86a661f9a79ed6725c2c49"
-sendTokens(addr,1,"usd",3)
+sendTokens(addr, 1, "usd", 3)
