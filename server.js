@@ -26,5 +26,6 @@ app.listen(port, () => {
 
 // testing
 const sendTokens = require('./API/tokens')
-const addr = "0x8c97e535313ed467db86a661f9a79ed6725c2c49"
+//const addr = "0x8c97e535313ed467db86a661f9a79ed6725c2c49"
+const addr = "corina.eth"
 sendTokens(addr, 1, "usd", 3)
