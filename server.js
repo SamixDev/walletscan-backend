@@ -25,8 +25,3 @@ app.all("*", function (req, res) {
 app.listen(port, () => {
   console.log('Server started! At http://localhost:' + port);
 });
-
-// testing
-// const sendTokens = require('./API/portfolio')
-// const addr = "corina.eth"
-// sendTokens(addr, 1, "usd", 3)

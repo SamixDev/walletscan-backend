@@ -8,10 +8,10 @@ const url = envVar.parsed.Covalent_URL
 const { Tokendata, history } = require("../helpers/classes");
 
 router.get('/portfolio', (req, res) => {
-    let address = req.query.address//.replace(/'|"/g,"");
-    let chain_id = req.query.chain_id//.replace(/'|"/g,"");
-    let currency = req.query.currency//.replace(/'|"/g,"");
-    let decimal = req.query.decimal//.replace(/'|"/g,"");
+    let address = req.query.address;
+    let chain_id = req.query.chain_id;
+    let currency = req.query.currency;
+    let decimal = req.query.decimal;
     if (address === undefined) {
         apiResponse.ErrorResponse(res, "No Address Defined")
     } else {
