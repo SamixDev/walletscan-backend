@@ -4,8 +4,10 @@ const port = envVar.parsed.Server_Port || 6000; //port nb from env var or 3000 i
 const app = express();
 const path = require('path');
 const apiResponse = require("./helpers/apiResponse");
+const portfolio = require("./API/portfolio")
 
 // routing APIs
+app.use('/api', portfolio);
 app.use(express.json());
 app.use(express.static("pages"));
 
@@ -25,7 +27,6 @@ app.listen(port, () => {
 });
 
 // testing
-const sendTokens = require('./API/tokens')
-//const addr = "0x8c97e535313ed467db86a661f9a79ed6725c2c49"
-const addr = "corina.eth"
-sendTokens(addr, 1, "usd", 3)
+// const sendTokens = require('./API/portfolio')
+// const addr = "corina.eth"
+// sendTokens(addr, 1, "usd", 3)
