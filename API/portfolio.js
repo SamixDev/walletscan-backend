@@ -44,8 +44,8 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
 
                 const tokens_data = data.items;
 
-                createResp(tokens_data, decimal, arrTickers).then(res => {
-                    totalPortfolio(res, decimal).then(res2 => {
+                createResp(tokens_data, decimal, arrTickers, currency).then(res => {
+                    totalPortfolio(res, decimal,currency).then(res2 => {
                         quotePercentages(res2, decimal).then(res3 => {
                             standardDeviation(res3, decimal, arrTickers.join("%2C")).then(res4 => {
                                 resolve(res4)
@@ -63,7 +63,7 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
 }
 
 //async function to fill array with data from Covalent at first
-async function createResp(tokens_data, decimal, arrTickers) {
+async function createResp(tokens_data, decimal, arrTickers,currency) {
     return new Promise((resolve, reject) => {
 
         let allItems = [];
@@ -94,6 +94,7 @@ async function createResp(tokens_data, decimal, arrTickers) {
                     element.holdings[0].quote_rate,
                     0,
                     0,
+                    currency,
                     arr
                 )
 
@@ -109,7 +110,7 @@ async function createResp(tokens_data, decimal, arrTickers) {
 }
 
 //async function to calculate all coins together for PORTFOLIO
-async function totalPortfolio(tokens_data, decimal) {
+async function totalPortfolio(tokens_data, decimal, currency) {
     return new Promise((resolve, reject) => {
         try {
 
@@ -160,8 +161,9 @@ async function totalPortfolio(tokens_data, decimal) {
                 Number(totalBalance.toFixed(decimal)),
                 Number(totalQuote.toFixed(decimal)),
                 0,
+                1,
                 0,
-                0,
+                currency,
                 arr2
                 )
 
