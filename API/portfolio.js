@@ -31,7 +31,7 @@ router.get('/portfolio', (req, res) => {
 });
 
 //async function get and send tokens
-async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 2) {
+async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) {
     return new Promise((resolve, reject) => {
         fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
             .then(response => response.json())
@@ -39,7 +39,10 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 2) 
                 const tokens_data = data.items;
                 createResp(tokens_data, decimal).then(res => {
                     totalPortfolio(res, decimal).then(res2 => {
-                        resolve(res2)
+                        quotePercentages(res2, decimal).then(res3 => {
+                            resolve(res3)
+                        })
+
                     })
                 })
             })
@@ -60,7 +63,9 @@ async function createResp(tokens_data, decimal) {
                     let eachHistoricalValue = new history(
                         el.timestamp,
                         Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
-                        el.close.quote
+                        Number(el.close.quote.toFixed(decimal)),
+                        Number(el.quote_rate.toFixed(decimal)),
+                        0
                     )
                     arr.push(JSON.parse(JSON.stringify(eachHistoricalValue)))
                 })
@@ -70,6 +75,8 @@ async function createResp(tokens_data, decimal) {
                     element.logo_url,
                     Number((element.holdings[0].close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
                     element.holdings[0].close.quote,
+                    element.holdings[0].quote_rate,
+                    0,
                     arr)
                 allItems.push(JSON.parse(JSON.stringify(itemData)));
             })
@@ -82,7 +89,7 @@ async function createResp(tokens_data, decimal) {
 }
 
 //async function to calculate all coins together for PORTFOLIO
-async function totalPortfolio(tokens_data) {
+async function totalPortfolio(tokens_data, decimal) {
     return new Promise((resolve, reject) => {
         try {
             let arr2 = [];
@@ -95,7 +102,9 @@ async function totalPortfolio(tokens_data) {
                     let eachHistoricalValue2 = new history(
                         histVal[i].timestamp,
                         0,
-                        0
+                        0,
+                        0,
+                        1
                     )
                     arr2.push(JSON.parse(JSON.stringify(eachHistoricalValue2)));
                 }
@@ -110,14 +119,25 @@ async function totalPortfolio(tokens_data) {
                     arr2[i].quote += el.historycal_value[i].quote
                 }
             })
+
+            //put decimal in the arr2 to the defined one
+            for (let i = 0; i < arr2.length; i++) {
+                arr2[i].balance = Number(arr2[i].balance.toFixed(decimal))
+                arr2[i].quote = Number(arr2[i].quote.toFixed(decimal))
+            }
+
             let itemData2 = new Tokendata(
                 "Entire Portfolio",
                 "PORTFOLIO",
                 "",
-                totalBalance,
-                totalQuote,
+                Number(totalBalance.toFixed(decimal)),
+                Number(totalQuote.toFixed(decimal)),
+                0,
+                0,
                 arr2)
             tokens_data.push(JSON.parse(JSON.stringify(itemData2)))
+
+
             resolve(tokens_data)
         } catch {
             resolve("")
@@ -125,4 +145,16 @@ async function totalPortfolio(tokens_data) {
     });
 }
 
+// add quote_percentage to the data
+async function quotePercentages(tokens_data, decimal) {
+    return new Promise((resolve, reject) => {
+            for (let i = 0; i < tokens_data.length - 1; i++) {
+                tokens_data[i].quote_percentage = Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal))
+                for (let j = 0; j < tokens_data[i].historycal_value.length; j++) {
+               tokens_data[i].historycal_value[j].quote_percentage = Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal))
+                }  
+            }
+            resolve(tokens_data)
+    })
+}
 module.exports = router;
