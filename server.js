@@ -5,9 +5,13 @@ const app = express();
 const path = require('path');
 const apiResponse = require("./helpers/apiResponse");
 const portfolio = require("./API/portfolio")
+// const nfts = require("./API/nfts")
+// const transactions = require("./API/transactions")
 
 // routing APIs
 app.use('/api', portfolio);
+// app.use('/api', nfts);
+// app.use('/api', transactions);
 app.use(express.json());
 app.use(express.static("pages"));
 
