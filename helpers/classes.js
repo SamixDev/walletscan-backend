@@ -7,6 +7,7 @@ function Tokendata(
     quote,
     quote_rate,
     quote_percentage,
+    stddev_24h,
     historycal_value
 ) {
     this.contract_name = contract_name;
@@ -16,6 +17,7 @@ function Tokendata(
     this.quote = quote;
     this.quote_rate = quote_rate;
     this.quote_percentage = quote_percentage;
+    this.stddev_24h = stddev_24h;
     this.historycal_value = historycal_value
 }
 

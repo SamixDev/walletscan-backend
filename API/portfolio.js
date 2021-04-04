@@ -33,14 +33,19 @@ router.get('/portfolio', (req, res) => {
 //async function get and send tokens
 async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) {
     return new Promise((resolve, reject) => {
+
+        let arrTickers = [];
+
         fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
             .then(response => response.json())
             .then(data => {
                 const tokens_data = data.items;
-                createResp(tokens_data, decimal).then(res => {
+                createResp(tokens_data, decimal, arrTickers).then(res => {
                     totalPortfolio(res, decimal).then(res2 => {
                         quotePercentages(res2, decimal).then(res3 => {
-                            resolve(res3)
+                            standardDeviation(res3, decimal, arrTickers.join("%2C")).then(res4 => {
+                            resolve(res4)
+                            })
                         })
 
                     })
@@ -53,7 +58,8 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
     });
 }
 
-async function createResp(tokens_data, decimal) {
+//async function to fill array with data from Covalent at first
+async function createResp(tokens_data, decimal,arrTickers) {
     return new Promise((resolve, reject) => {
         let allItems = [];
         try {
@@ -65,6 +71,7 @@ async function createResp(tokens_data, decimal) {
                         Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
                         Number(el.close.quote.toFixed(decimal)),
                         Number(el.quote_rate.toFixed(decimal)),
+                        0,
                         0
                     )
                     arr.push(JSON.parse(JSON.stringify(eachHistoricalValue)))
@@ -77,8 +84,10 @@ async function createResp(tokens_data, decimal) {
                     element.holdings[0].close.quote,
                     element.holdings[0].quote_rate,
                     0,
+                    0,
                     arr)
-                allItems.push(JSON.parse(JSON.stringify(itemData)));
+                    arrTickers.push(JSON.parse(JSON.stringify(itemData.contract_ticker_symbol)));
+                    allItems.push(JSON.parse(JSON.stringify(itemData)));
             })
             resolve(allItems)
         } catch {
@@ -134,6 +143,7 @@ async function totalPortfolio(tokens_data, decimal) {
                 Number(totalQuote.toFixed(decimal)),
                 0,
                 0,
+                0,
                 arr2)
             tokens_data.push(JSON.parse(JSON.stringify(itemData2)))
 
@@ -145,16 +155,35 @@ async function totalPortfolio(tokens_data, decimal) {
     });
 }
 
-// add quote_percentage to the data
+//async function to add quote_percentage to the data
 async function quotePercentages(tokens_data, decimal) {
     return new Promise((resolve, reject) => {
-            for (let i = 0; i < tokens_data.length - 1; i++) {
-                tokens_data[i].quote_percentage = Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal))
-                for (let j = 0; j < tokens_data[i].historycal_value.length; j++) {
-               tokens_data[i].historycal_value[j].quote_percentage = Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal))
-                }  
+        for (let i = 0; i < tokens_data.length - 1; i++) {
+            tokens_data[i].quote_percentage = Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal))
+            for (let j = 0; j < tokens_data[i].historycal_value.length; j++) {
+                tokens_data[i].historycal_value[j].quote_percentage = Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal))
             }
-            resolve(tokens_data)
+        }
+        resolve(tokens_data)
     })
 }
+
+//async function to add standard deviation over 24hrs (stddev_24h)
+async function standardDeviation(tokens_data, decimal, arrTickers) {
+    return new Promise((resolve, reject) => {
+        console.log(url + `pricing/volatility/?tickers=${arrTickers}`)
+        fetch(url + `pricing/volatility/?tickers=${arrTickers}`)
+            .then(response => response.json())
+            .then(data => {
+                const tiker_data = data.items;
+                console.log(tiker_data)
+                resolve(tokens_data)
+            })
+            .catch(error => {
+                resolve("")
+                throw error;
+            });
+    })
+}
+
 module.exports = router;
