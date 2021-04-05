@@ -208,8 +208,8 @@ async function quotePercentages(tokens_data, decimal) {
 async function standardDeviation(tokens_data, decimal) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < tokens_data.length; i++) {
-            tokens_data[i].change24h = Number(tokens_data[i].historycal_value[0].quote_rate - tokens_data[i].historycal_value[2].quote_rate).toFixed(decimal)
-            tokens_data[i].change24h_percentage = Number((tokens_data[i].historycal_value[0].quote_rate / tokens_data[i].historycal_value[2].quote_rate) - 1).toFixed(decimal)
+            tokens_data[i].change24h = Number(tokens_data[i].historycal_value[0].quote_rate - tokens_data[i].historycal_value[1].quote_rate).toFixed(decimal)
+            tokens_data[i].change24h_percentage = Number((tokens_data[i].historycal_value[0].quote_rate / tokens_data[i].historycal_value[1].quote_rate) - 1).toFixed(decimal)
 
         }
         resolve(tokens_data)
