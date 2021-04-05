@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const express = require('express');
 const router = express.Router();
 const apiResponse = require("../helpers/apiResponse");
-var request = require('request');
 const key = envVar.parsed.API_KEY
 const url = envVar.parsed.Covalent_URL
 const { Tokendata, history } = require("../helpers/classes");
@@ -57,6 +56,7 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                             console.time("image check time from covalent API");
                             checkImages(res3).then(res5 => {
                                 console.timeEnd("image check time from covalent API");
+                                console.log("--------------------------------------");
                                 resolve(res5)
                             })
                             //    })
