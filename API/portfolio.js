@@ -51,15 +51,15 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                         console.timeEnd("creating portfolio (my code)");
                         console.time("creating percentages (my code)");
                         quotePercentages(res2, decimal).then(res3 => {
-                               standardDeviation(res3, decimal).then(res4 => {
-                            console.timeEnd("creating percentages (my code)");
-                            console.time("image check time from covalent API");
-                            checkImages(res4).then(res5 => {
-                                console.timeEnd("image check time from covalent API");
-                                console.log("--------------------------------------");
-                                resolve(res5)
-                            })
+                            standardDeviation(res3, decimal).then(res4 => {
+                                console.timeEnd("creating percentages (my code)");
+                                console.time("image check time from covalent API");
+                                checkImages(res4).then(res5 => {
+                                    console.timeEnd("image check time from covalent API");
+                                    console.log("--------------------------------------");
+                                    resolve(res5)
                                 })
+                            })
                         })
 
                     })
@@ -208,8 +208,8 @@ async function quotePercentages(tokens_data, decimal) {
 async function standardDeviation(tokens_data, decimal) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < tokens_data.length; i++) {
-            tokens_data[i].change24h = Number(tokens_data[i].historycal_value[0].quote_rate - tokens_data[i].historycal_value[1].quote_rate).toFixed(decimal)
-            tokens_data[i].change24h_percentage = Number((tokens_data[i].historycal_value[0].quote_rate / tokens_data[i].historycal_value[1].quote_rate) - 1).toFixed(decimal)
+            tokens_data[i].change24h = Number((tokens_data[i].historycal_value[0].quote_rate - tokens_data[i].historycal_value[1].quote_rate).toFixed(decimal))
+            tokens_data[i].change24h_percentage = Number(((tokens_data[i].historycal_value[0].quote_rate / tokens_data[i].historycal_value[1].quote_rate) - 1).toFixed(decimal))
 
         }
         resolve(tokens_data)
