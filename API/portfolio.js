@@ -38,21 +38,28 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
     return new Promise((resolve, reject) => {
 
         let arrTickers = [];
-
+        console.time("fetch time from cocalent API");
         fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
             .then(response => response.json())
             .then(data => {
-
+                console.timeEnd("fetch time from cocalent API");
                 const tokens_data = data.items;
-
+                console.time("creating objects to send (my code)");
                 createResp(tokens_data, decimal, arrTickers, currency).then(res => {
+                    console.timeEnd("creating objects to send (my code)");
+                    console.time("creating portfolio (my code)");
                     totalPortfolio(res, decimal, currency).then(res2 => {
+                        console.timeEnd("creating portfolio (my code)");
+                        console.time("creating percentages (my code)");
                         quotePercentages(res2, decimal).then(res3 => {
-                            standardDeviation(res3, decimal, arrTickers.join("%2C")).then(res4 => {
-                                checkImage(res4).then(res5 => {
-                                    resolve(res4)
-                                })
+                            //   standardDeviation(res3, decimal, arrTickers.join("%2C")).then(res4 => {
+                                console.timeEnd("creating percentages (my code)");    
+                            console.time("image check time from covalent API");
+                            checkImages(res3).then(res5 => {
+                                console.timeEnd("image check time from covalent API");
+                                resolve(res5)
                             })
+                            //    })
                         })
 
                     })
@@ -143,7 +150,7 @@ async function totalPortfolio(tokens_data, decimal, currency) {
 
             // loop over the data and fill the portfolio historical data
             tokens_data.forEach(el => {
-
+                //  el.stddev_24h = el.historycal_value[0] - el.historycal_value[1]
                 totalBalance += el.balance;
                 totalQuote += el.quote;
 
@@ -196,37 +203,35 @@ async function quotePercentages(tokens_data, decimal) {
 }
 
 //async function to add standard deviation over 24hrs (stddev_24h)
-async function standardDeviation(tokens_data, decimal, arrTickers) {
-    return new Promise((resolve, reject) => {
-        //    console.log(url + `pricing/volatility/?tickers=${arrTickers}`)
-        fetch(url + `pricing/volatility/?tickers=${arrTickers}`)
-            .then(response => response.json())
-            .then(data => {
+// async function standardDeviation(tokens_data, decimal, arrTickers) {
+//     return new Promise((resolve, reject) => {
+//         //    console.log(url + `pricing/volatility/?tickers=${arrTickers}`)
+//         fetch(url + `pricing/volatility/?tickers=${arrTickers}`)
+//             .then(response => response.json())
+//             .then(data => {
 
-                const tiker_data = data.data.items;
+//                 const tiker_data = data.data.items;
 
-                //    console.log(tiker_data)
-                resolve(tokens_data)
-            })
-            .catch(error => {
-                resolve("")
-                throw error;
-            });
-    })
-}
+//                 //    console.log(tiker_data)
+//                 resolve(tokens_data)
+//             })
+//             .catch(error => {
+//                 resolve("")
+//                 throw error;
+//             });
+//     })
+// }
 
 //check if image valid
-async function checkImage(data) {
-     let promises = data.map(i => {
-            if (!(i.logo_url == "")) {
-               return new Promise((resolve, reject) => {
+async function checkImages(data) {
+    let promises = data.map(i => {
+        if (!(i.logo_url == "")) {
+            return new Promise((resolve, reject) => {
                 fetch(i.logo_url, { method: 'HEAD' })
                     .then(res => {
                         if (res.ok) {
-                            console.log('Image exists.');
                             resolve();
                         } else {
-                            console.log('Image does not exist.');
                             i.logo_url = ""
                             resolve();
                         }
@@ -234,15 +239,13 @@ async function checkImage(data) {
                         console.log('Error:', err)
                         i.logo_url = ""
                         resolve();
-                });
-                })
-            }
-        })
-
-      return  Promise.all(promises).then(() => {
-            console.log('Done');
-            return data;
-          });
+                    });
+            })
+        }
+    })
+    return Promise.all(promises).then(() => {
+        return data;
+    });
 }
 
 module.exports = router;
