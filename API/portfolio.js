@@ -37,11 +37,11 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
     return new Promise((resolve, reject) => {
 
         let arrTickers = [];
-        console.time("fetch time from cocalent API");
+        console.time("fetch time from covalent API");
         fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
             .then(response => response.json())
             .then(data => {
-                console.timeEnd("fetch time from cocalent API");
+                console.timeEnd("fetch time from covalent API");
                 const tokens_data = data.items;
                 console.time("creating objects to send (my code)");
                 createResp(tokens_data, decimal, arrTickers, currency).then(res => {
@@ -51,15 +51,15 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                         console.timeEnd("creating portfolio (my code)");
                         console.time("creating percentages (my code)");
                         quotePercentages(res2, decimal).then(res3 => {
-                            //   standardDeviation(res3, decimal, arrTickers.join("%2C")).then(res4 => {
-                                console.timeEnd("creating percentages (my code)");    
+                               standardDeviation(res3, decimal).then(res4 => {
+                            console.timeEnd("creating percentages (my code)");
                             console.time("image check time from covalent API");
-                            checkImages(res3).then(res5 => {
+                            checkImages(res4).then(res5 => {
                                 console.timeEnd("image check time from covalent API");
                                 console.log("--------------------------------------");
                                 resolve(res5)
                             })
-                            //    })
+                                })
                         })
 
                     })
@@ -104,6 +104,7 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
                     Number((element.holdings[0].close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
                     element.holdings[0].close.quote,
                     element.holdings[0].quote_rate,
+                    0,
                     0,
                     0,
                     currency,
@@ -175,6 +176,7 @@ async function totalPortfolio(tokens_data, decimal, currency) {
                 0,
                 1,
                 0,
+                0,
                 currency,
                 arr2
             )
@@ -202,25 +204,17 @@ async function quotePercentages(tokens_data, decimal) {
     })
 }
 
-//async function to add standard deviation over 24hrs (stddev_24h)
-// async function standardDeviation(tokens_data, decimal, arrTickers) {
-//     return new Promise((resolve, reject) => {
-//         //    console.log(url + `pricing/volatility/?tickers=${arrTickers}`)
-//         fetch(url + `pricing/volatility/?tickers=${arrTickers}`)
-//             .then(response => response.json())
-//             .then(data => {
+//async function to add standard deviation over 24hrs (change24h)
+async function standardDeviation(tokens_data, decimal) {
+    return new Promise((resolve, reject) => {
+        for (let i = 0; i < tokens_data.length; i++) {
+            tokens_data[i].change24h = Number(tokens_data[i].historycal_value[0].quote_rate - tokens_data[i].historycal_value[2].quote_rate).toFixed(decimal)
+            tokens_data[i].change24h_percentage = Number((tokens_data[i].historycal_value[0].quote_rate / tokens_data[i].historycal_value[2].quote_rate) - 1).toFixed(decimal)
 
-//                 const tiker_data = data.data.items;
-
-//                 //    console.log(tiker_data)
-//                 resolve(tokens_data)
-//             })
-//             .catch(error => {
-//                 resolve("")
-//                 throw error;
-//             });
-//     })
-// }
+        }
+        resolve(tokens_data)
+    })
+}
 
 //check if image valid
 async function checkImages(data) {

@@ -7,7 +7,8 @@ function Tokendata(
     quote,
     quote_rate,
     quote_percentage,
-    stddev_24h,
+    change24h,
+    change24h_percentage,
     quote_currency,
     historycal_value
 ) {
@@ -18,7 +19,8 @@ function Tokendata(
     this.quote = quote;
     this.quote_rate = quote_rate;
     this.quote_percentage = quote_percentage;
-    this.stddev_24h = stddev_24h;
+    this.change24h = change24h;
+    this.change24h_percentage = change24h_percentage;
     this.quote_currency = quote_currency;
     this.historycal_value = historycal_value
 }
