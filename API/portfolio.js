@@ -47,11 +47,14 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                 createResp(tokens_data, decimal, arrTickers, currency).then(res => {
                     console.timeEnd("creating objects to send (my code)");
                     console.time("creating portfolio (my code)");
+                    console.log("first",res)
                     totalPortfolio(res, decimal, currency).then(res2 => {
                         console.timeEnd("creating portfolio (my code)");
                         console.time("creating percentages (my code)");
+                        console.log("second",res2)
                         quotePercentages(res2, decimal).then(res3 => {
                             standardDeviation(res3, decimal).then(res4 => {
+                                console.log("standard dev ", res4)
                                 console.timeEnd("creating percentages (my code)");
                                 console.time("image check time from covalent API");
                                 checkImages(res4).then(res5 => {
@@ -87,9 +90,8 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
                     let eachHistoricalValue = new history(
                         el.timestamp,
                         Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
-                        el.close.quote !== null ? Number(el.close.quote.toFixed(decimal)) : 0,
-                        el.close.quote !== null ? Number(el.quote_rate.toFixed(decimal)) : 0,
-                        0,
+                        el.close.quote ? Number(el.close.quote.toFixed(decimal)) : 0,
+                        el.quote_rate ? Number(el.quote_rate.toFixed(decimal)) : 0,
                         0
                     )
                     arr.push(JSON.parse(JSON.stringify(eachHistoricalValue)))
@@ -101,8 +103,8 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
                     element.contract_ticker_symbol,
                     element.logo_url,
                     Number((element.holdings[0].close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
-                    element.holdings[0].close.quote,
-                    element.holdings[0].quote_rate,
+                    element.holdings[0].close.quote ? element.holdings[0].close.quote : 0 ,
+                    element.holdings[0].quote_rate ? element.holdings[0].quote_rate : 0,
                     0,
                     0,
                     0,
@@ -191,11 +193,12 @@ async function totalPortfolio(tokens_data, decimal, currency) {
 async function quotePercentages(tokens_data, decimal) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < tokens_data.length - 1; i++) {
-
-            tokens_data[i].quote_percentage = Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal))
+            console.log(tokens_data[i].quote)
+            console.log(tokens_data[tokens_data.length - 1].quote)
+            tokens_data[i].quote_percentage = Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal)) ? Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal)) : 0
 
             for (let j = 0; j < tokens_data[i].historycal_value.length; j++) {
-                tokens_data[i].historycal_value[j].quote_percentage = Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal))
+                tokens_data[i].historycal_value[j].quote_percentage = Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal)) ?  Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal)) : 0
             }
         }
         resolve(tokens_data)
@@ -216,7 +219,6 @@ async function standardDeviation(tokens_data, decimal) {
 
 //check if image valid
 async function checkImages(data) {
-    console.log("fetch images data " , data)
     if (data !== ""){
     let promises = data.map(i => {
         if (!(i.logo_url == "")) {
