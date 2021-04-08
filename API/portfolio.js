@@ -78,7 +78,6 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
 
         let allItems = [];
 
-        try {
             tokens_data.forEach(element => {
 
                 let arr = []
@@ -88,8 +87,8 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
                     let eachHistoricalValue = new history(
                         el.timestamp,
                         Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
-                        Number(el.close.quote.toFixed(decimal)),
-                        Number(el.quote_rate.toFixed(decimal)),
+                        el.close.quote !== null ? Number(el.close.quote.toFixed(decimal)) : 0,
+                        el.close.quote !== null ? Number(el.quote_rate.toFixed(decimal)) : 0,
                         0,
                         0
                     )
@@ -115,10 +114,9 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
                 allItems.push(JSON.parse(JSON.stringify(itemData)));
             })
             resolve(allItems)
-        } catch {
-            resolve("")
-        }
-
+    }).catch(error => {
+        resolve("")
+        console.log("error fetching data to fill class ", error)
     });
 }
 
@@ -218,6 +216,8 @@ async function standardDeviation(tokens_data, decimal) {
 
 //check if image valid
 async function checkImages(data) {
+    console.log("fetch images data " , data)
+    if (data !== ""){
     let promises = data.map(i => {
         if (!(i.logo_url == "")) {
             return new Promise((resolve, reject) => {
@@ -234,12 +234,18 @@ async function checkImages(data) {
                         i.logo_url = ""
                         resolve();
                     });
+            }).catch(err =>{
+                console.log("image fetch err ", err)
+                resolve();
             })
         }
     })
     return Promise.all(promises).then(() => {
         return data;
     });
+    } else{
+
+    }
 }
 
 module.exports = router;
