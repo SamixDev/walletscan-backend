@@ -27,6 +27,8 @@ router.get('/portfolio', (req, res) => {
                 } else {
                     apiResponse.successResponse(res, r)
                 }
+            }, reason => {
+                apiResponse.ErrorResponse(res, reason)
             });
 
     }
@@ -41,32 +43,37 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
         fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
             .then(response => response.json())
             .then(data => {
-                console.timeEnd("fetch Protfolio time from covalent API");
-                const tokens_data = data.items;
-                console.time("creating objects to send (my code)");
-                createResp(tokens_data, decimal, arrTickers, currency).then(res => {
-                    console.timeEnd("creating objects to send (my code)");
-                    console.time("creating portfolio (my code)");
-                    console.log("first",res)
-                    totalPortfolio(res, decimal, currency).then(res2 => {
-                        console.timeEnd("creating portfolio (my code)");
-                        console.time("creating percentages (my code)");
-                        console.log("second",res2)
-                        quotePercentages(res2, decimal).then(res3 => {
-                            standardDeviation(res3, decimal).then(res4 => {
-                                console.log("standard dev ", res4)
-                                console.timeEnd("creating percentages (my code)");
-                                console.time("image check time from covalent API");
-                                checkImages(res4).then(res5 => {
-                                    console.timeEnd("image check time from covalent API");
-                                    console.log("--------------------------------------");
-                                    resolve(res5)
+                if (!data.error) {
+                    console.timeEnd("fetch Protfolio time from covalent API");
+                    const tokens_data = data.items;
+                    console.time("creating objects to send (my code)");
+                    createResp(tokens_data, decimal, arrTickers, currency).then(res => {
+                        console.timeEnd("creating objects to send (my code)");
+                        console.time("creating portfolio (my code)");
+                        console.log("first", res)
+                        totalPortfolio(res, decimal, currency).then(res2 => {
+                            console.timeEnd("creating portfolio (my code)");
+                            console.time("creating percentages (my code)");
+                            console.log("second", res2)
+                            quotePercentages(res2, decimal).then(res3 => {
+                                standardDeviation(res3, decimal).then(res4 => {
+                                    console.log("standard dev ", res4)
+                                    console.timeEnd("creating percentages (my code)");
+                                    console.time("image check time from covalent API");
+                                    checkImages(res4).then(res5 => {
+                                        console.timeEnd("image check time from covalent API");
+                                        console.log("--------------------------------------");
+                                        resolve(res5)
+                                    })
                                 })
                             })
-                        })
 
+                        })
                     })
-                })
+                } else {
+                    reject(data.error_message)
+                    //   apiResponse.ErrorResponse(res, data.error_message)
+                }
             })
             .catch(error => {
                 resolve("")
@@ -81,41 +88,41 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
 
         let allItems = [];
 
-            tokens_data.forEach(element => {
+        tokens_data.forEach(element => {
 
-                let arr = []
+            let arr = []
 
-                element.holdings.forEach(el => {
+            element.holdings.forEach(el => {
 
-                    let eachHistoricalValue = new History(
-                        el.timestamp,
-                        Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
-                        el.close.quote ? Number(el.close.quote.toFixed(decimal)) : 0,
-                        el.quote_rate ? Number(el.quote_rate.toFixed(decimal)) : 0,
-                        0
-                    )
-                    arr.push(JSON.parse(JSON.stringify(eachHistoricalValue)))
-
-                })
-
-                let itemData = new Tokendata(
-                    element.contract_name,
-                    element.contract_ticker_symbol,
-                    element.logo_url,
-                    Number((element.holdings[0].close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
-                    element.holdings[0].close.quote ? element.holdings[0].close.quote : 0 ,
-                    element.holdings[0].quote_rate ? element.holdings[0].quote_rate : 0,
-                    0,
-                    0,
-                    0,
-                    currency,
-                    arr
+                let eachHistoricalValue = new History(
+                    el.timestamp,
+                    Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
+                    el.close.quote ? Number(el.close.quote.toFixed(decimal)) : 0,
+                    el.quote_rate ? Number(el.quote_rate.toFixed(decimal)) : 0,
+                    0
                 )
+                arr.push(JSON.parse(JSON.stringify(eachHistoricalValue)))
 
-                arrTickers.push(JSON.parse(JSON.stringify(itemData.contract_ticker_symbol)));
-                allItems.push(JSON.parse(JSON.stringify(itemData)));
             })
-            resolve(allItems)
+
+            let itemData = new Tokendata(
+                element.contract_name,
+                element.contract_ticker_symbol,
+                element.logo_url,
+                Number((element.holdings[0].close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
+                element.holdings[0].close.quote ? element.holdings[0].close.quote : 0,
+                element.holdings[0].quote_rate ? element.holdings[0].quote_rate : 0,
+                0,
+                0,
+                0,
+                currency,
+                arr
+            )
+
+            arrTickers.push(JSON.parse(JSON.stringify(itemData.contract_ticker_symbol)));
+            allItems.push(JSON.parse(JSON.stringify(itemData)));
+        })
+        resolve(allItems)
     }).catch(error => {
         resolve("")
         console.log("error fetching data to fill class ", error)
@@ -198,7 +205,7 @@ async function quotePercentages(tokens_data, decimal) {
             tokens_data[i].quote_percentage = Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal)) ? Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal)) : 0
 
             for (let j = 0; j < tokens_data[i].historycal_value.length; j++) {
-                tokens_data[i].historycal_value[j].quote_percentage = Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal)) ?  Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal)) : 0
+                tokens_data[i].historycal_value[j].quote_percentage = Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal)) ? Number((tokens_data[i].historycal_value[j].quote / tokens_data[tokens_data.length - 1].historycal_value[j].quote).toFixed(decimal)) : 0
             }
         }
         resolve(tokens_data)
@@ -219,33 +226,33 @@ async function standardDeviation(tokens_data, decimal) {
 
 //check if image valid
 async function checkImages(data) {
-    if (data !== ""){
-    let promises = data.map(i => {
-        if (!(i.logo_url == "")) {
-            return new Promise((resolve, reject) => {
-                fetch(i.logo_url, { method: 'HEAD' })
-                    .then(res => {
-                        if (res.ok) {
-                            resolve();
-                        } else {
+    if (data !== "") {
+        let promises = data.map(i => {
+            if (!(i.logo_url == "")) {
+                return new Promise((resolve, reject) => {
+                    fetch(i.logo_url, { method: 'HEAD' })
+                        .then(res => {
+                            if (res.ok) {
+                                resolve();
+                            } else {
+                                i.logo_url = ""
+                                resolve();
+                            }
+                        }).catch(err => {
+                            console.log('Error:', err)
                             i.logo_url = ""
                             resolve();
-                        }
-                    }).catch(err => {
-                        console.log('Error:', err)
-                        i.logo_url = ""
-                        resolve();
-                    });
-            }).catch(err =>{
-                console.log("image fetch err ", err)
-                resolve();
-            })
-        }
-    })
-    return Promise.all(promises).then(() => {
-        return data;
-    });
-    } else{
+                        });
+                }).catch(err => {
+                    console.log("image fetch err ", err)
+                    resolve();
+                })
+            }
+        })
+        return Promise.all(promises).then(() => {
+            return data;
+        });
+    } else {
 
     }
 }
