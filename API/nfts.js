@@ -26,7 +26,7 @@ router.get('/nfts', (req, res) => {
                 }
             }, reason => {
                 apiResponse.ErrorResponse(res, reason)
-              });
+            });
 
     }
 });
@@ -47,7 +47,6 @@ async function getNfts(address, chain_id) {
                     });
                 } else {
                     reject(data.error_message)
-                 //   apiResponse.ErrorResponse(res, data.error_message)
                 }
             }).catch(error => {
                 resolve("")

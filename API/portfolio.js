@@ -200,8 +200,6 @@ async function totalPortfolio(tokens_data, decimal, currency) {
 async function quotePercentages(tokens_data, decimal) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < tokens_data.length - 1; i++) {
-            console.log(tokens_data[i].quote)
-            console.log(tokens_data[tokens_data.length - 1].quote)
             tokens_data[i].quote_percentage = Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal)) ? Number((tokens_data[i].quote / tokens_data[tokens_data.length - 1].quote).toFixed(decimal)) : 0
 
             for (let j = 0; j < tokens_data[i].historycal_value.length; j++) {

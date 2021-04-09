@@ -51,4 +51,4 @@ function NftData(
 }
 // for transactions page
 
-module.exports = { Tokendata, History, NftData}
+module.exports = { Tokendata, History, NftData }
