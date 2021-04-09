@@ -37,11 +37,11 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
     return new Promise((resolve, reject) => {
 
         let arrTickers = [];
-        console.time("fetch time from covalent API");
+        console.time("fetch Protfolio time from covalent API");
         fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
             .then(response => response.json())
             .then(data => {
-                console.timeEnd("fetch time from covalent API");
+                console.timeEnd("fetch Protfolio time from covalent API");
                 const tokens_data = data.items;
                 console.time("creating objects to send (my code)");
                 createResp(tokens_data, decimal, arrTickers, currency).then(res => {

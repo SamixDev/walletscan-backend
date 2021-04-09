@@ -7,7 +7,7 @@ const key = envVar.parsed.API_KEY
 const url = envVar.parsed.Covalent_URL
 const { NftData } = require("../helpers/classes");
 
-router.get('/portfolio', (req, res) => {
+router.get('/nfts', (req, res) => {
     let address = req.query.address;
     let chain_id = req.query.chain_id;
 
@@ -30,8 +30,41 @@ router.get('/portfolio', (req, res) => {
 
 async function getNfts(address, chain_id){
     return new Promise((resolve, reject) => {
-
+        console.time("fetch NFT time from covalent API");
+        fetch(url + `${chain_id}/address/${address}/balances_v2/?nft=true`)
+            .then(response => response.json())
+            .then(data => {
+                console.timeEnd("fetch NFT time from covalent API");
+                console.time("filter NFTs");
+                filterNFTs(data).then(res => {
+                    console.timeEnd("filter NFTs");
+                    console.log("--------------------------------------");
+                    resolve(res)
+                });
+            }).catch(error => {
+                resolve("")
+                throw error;
+            });
     });
+}
+
+//async function to add quote_percentage to the data
+async function filterNFTs(data) {
+    return new Promise((resolve, reject) => {
+        let nfts = [];
+        data.data.items.forEach(el => {
+            if (el.type === "nft"){
+                console.log(el.nft_data[0].external_data)
+                let eachNFT = new NftData(
+                    el.nft_data[0].external_data.name,
+                    el.nft_data[0].external_data.description,
+                    el.nft_data[0].external_data.image
+                )
+                nfts.push(JSON.parse(JSON.stringify(eachNFT)))
+            }
+        });
+        resolve(nfts)
+    })
 }
 
 module.exports = router;
