@@ -5,7 +5,7 @@ const router = express.Router();
 const apiResponse = require("../helpers/apiResponse");
 const key = envVar.parsed.API_KEY
 const url = envVar.parsed.Covalent_URL
-const { Tokendata, history } = require("../helpers/classes");
+const { Tokendata, History } = require("../helpers/classes");
 
 router.get('/portfolio', (req, res) => {
     let address = req.query.address;
@@ -87,7 +87,7 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
 
                 element.holdings.forEach(el => {
 
-                    let eachHistoricalValue = new history(
+                    let eachHistoricalValue = new History(
                         el.timestamp,
                         Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),
                         el.close.quote ? Number(el.close.quote.toFixed(decimal)) : 0,
@@ -138,7 +138,7 @@ async function totalPortfolio(tokens_data, decimal, currency) {
 
                 for (let i = 0; i < histVal.length; i++) {
 
-                    let eachHistoricalValue2 = new history(
+                    let eachHistoricalValue2 = new History(
                         histVal[i].timestamp,
                         0,
                         0,

@@ -25,7 +25,7 @@ function Tokendata(
     this.historycal_value = historycal_value
 }
 
-function history(
+function History(
     timestamp,
     balance,
     quote,
@@ -40,7 +40,15 @@ function history(
 }
 
 // for nfts page
-
+function NftData(
+    title,
+    description,
+    media_link
+) {
+    this.title = title;
+    this.description = description;
+    this.media_link = media_link
+}
 // for transactions page
 
-module.exports = { Tokendata, history }
+module.exports = { Tokendata, History, NftData}
