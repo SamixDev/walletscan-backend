@@ -39,25 +39,22 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
     return new Promise((resolve, reject) => {
 
         let arrTickers = [];
-        console.time("fetch Protfolio time from covalent API");
+        console.time("fetch Protfolio from covalent API");
         fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
             .then(response => response.json())
             .then(data => {
                 if (!data.error) {
-                    console.timeEnd("fetch Protfolio time from covalent API");
+                    console.timeEnd("fetch Protfolio from covalent API");
                     const tokens_data = data.items;
                     console.time("creating objects to send (my code)");
                     createResp(tokens_data, decimal, arrTickers, currency).then(res => {
                         console.timeEnd("creating objects to send (my code)");
                         console.time("creating portfolio (my code)");
-                        console.log("first", res)
                         totalPortfolio(res, decimal, currency).then(res2 => {
                             console.timeEnd("creating portfolio (my code)");
                             console.time("creating percentages (my code)");
-                            console.log("second", res2)
                             quotePercentages(res2, decimal).then(res3 => {
                                 standardDeviation(res3, decimal).then(res4 => {
-                                    console.log("standard dev ", res4)
                                     console.timeEnd("creating percentages (my code)");
                                     console.time("image check time from covalent API");
                                     checkImages(res4).then(res5 => {
