@@ -40,15 +40,23 @@ function History(
 }
 
 // for nfts page
+function NftCat(
+    id,
+    contract_address,
+) {
+    this.id = id;
+    this.contract_address = contract_address;
+}
+
 function NftData(
     title,
     description,
-    media_link
+    media_link,
 ) {
     this.title = title;
     this.description = description;
-    this.media_link = media_link
+    this.media_link = media_link;
 }
 // for transactions page
 
-module.exports = { Tokendata, History, NftData }
+module.exports = { Tokendata, History, NftData,NftCat }
