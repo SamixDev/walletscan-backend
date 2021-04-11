@@ -68,12 +68,12 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                         })
                     })
                 } else {
+                    console.timeEnd("fetch Protfolio from covalent API");
                     reject(data.error_message)
                     //   apiResponse.ErrorResponse(res, data.error_message)
                 }
             })
             .catch(error => {
-                console.timeEnd("fetch Protfolio from covalent API");
                 resolve("")
                 throw error;
             });
