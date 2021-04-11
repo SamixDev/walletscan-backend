@@ -14,7 +14,7 @@ router.get('/portfolio', (req, res) => {
     let decimal = req.query.decimal;
 
     if (address === undefined) {
-        apiResponse.ErrorResponse(res, "No Address Defined")
+        apiResponse.errResponse(res, "No Address Defined")
     } else {
         chain_id === undefined ? null : chain_id = chain_id.replace(/'|"/g, "")
         currency === undefined ? null : currency = currency.replace(/'|"/g, "")
@@ -23,12 +23,12 @@ router.get('/portfolio', (req, res) => {
         sendTokens(address, chain_id, currency, decimal)
             .then(r => {
                 if (r === "") {
-                    apiResponse.ErrorResponse(res, "No Data")
+                    apiResponse.errResponse(res, "No Data")
                 } else {
                     apiResponse.successResponse(res, r)
                 }
             }, reason => {
-                apiResponse.ErrorResponse(res, reason)
+                apiResponse.errResponse(res, reason)
             });
 
     }
@@ -73,6 +73,7 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                 }
             })
             .catch(error => {
+                console.timeEnd("fetch Protfolio from covalent API");
                 resolve("")
                 throw error;
             });

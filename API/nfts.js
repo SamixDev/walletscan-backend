@@ -13,19 +13,19 @@ router.get('/nfts', (req, res) => {
     let chain_id = req.query.chain_id;
 
     if (address === undefined) {
-        apiResponse.ErrorResponse(res, "No Address Defined")
+        apiResponse.errResponse(res, "No Address Defined")
     } else {
         chain_id === undefined ? null : chain_id = chain_id.replace(/'|"/g, "")
 
         getNfts(address, chain_id)
             .then(r => {
                 if (r === "") {
-                    apiResponse.ErrorResponse(res, "No Data")
+                    apiResponse.errResponse(res, "No Data")
                 } else {
                     apiResponse.successResponse(res, r)
                 }
             }, reason => {
-                apiResponse.ErrorResponse(res, reason)
+                apiResponse.errResponse(res, reason)
             });
 
     }
