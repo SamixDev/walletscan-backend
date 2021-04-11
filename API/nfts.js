@@ -31,7 +31,7 @@ router.get('/nfts', (req, res) => {
     }
 });
 
-async function getNfts(address, chain_id) {
+async function getNfts(address, chain_id = 1) {
     return new Promise((resolve, reject) => {
         console.time("fetch NFT time from covalent API");
         fetch(url + `${chain_id}/address/${address}/balances_v2/?nft=true`)
