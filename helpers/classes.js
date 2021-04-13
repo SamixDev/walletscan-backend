@@ -64,10 +64,10 @@ function TransactionsData(
     date,
     tx_hash,
     receiver,
-    description,
-    Amount,
+    amount,
     gas_units,
     gas_price,
+    fee,
     total_balance,
     total_quote,
 ) {
@@ -75,10 +75,10 @@ function TransactionsData(
     this.date = date;
     this.tx_hash = tx_hash;
     this.receiver = receiver;
-    this.description = description;
-    this.Amount = Amount;
+    this.amount = amount;
     this.gas_units = gas_units;
     this.gas_price = gas_price;
+    this.fee = fee;
     this.total_balance = total_balance;
     this.total_quote = total_quote;
 }
