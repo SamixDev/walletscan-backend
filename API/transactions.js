@@ -41,24 +41,24 @@ async function getTransactions(address, chain_id = 1) {
                 console.time("filter Transactions");
                 if (data.data && data.data.items && data.error == false) {
                     data.data.items.forEach(el => {
-                                let transaction = new TransactionsData(
-                                    el.block_signed_at.slice(0,10),
-                                    el.block_signed_at.slice(-9,-1)+" UTC",
-                                    el.tx_hash,
-                                    el.to_address,
-                                    Number((el.value / (10 ** 18)).toFixed(6)),
-                                    el.gas_spent,
-                                    Number((el.gas_price / (10 ** 9)).toFixed(0)),
-                                    Number(((el.gas_price*el.gas_spent )/ (10 ** 18)).toFixed(6)),
-                                    Number((el.value_quote + el.gas_quote).toFixed(2)),
-                                    Number(((el.value / (10 ** 18)) + ((el.gas_price*el.gas_spent )/ (10 ** 18))).toFixed(6)),
-                                )
-                                tnx.push(JSON.parse(JSON.stringify(transaction)))
+                        let transaction = new TransactionsData(
+                            el.block_signed_at.slice(0, 10),
+                            el.block_signed_at.slice(-9, -1) + " UTC",
+                            el.tx_hash,
+                            el.to_address,
+                            Number((el.value / (10 ** 18)).toFixed(6)),
+                            el.gas_spent,
+                            Number((el.gas_price / (10 ** 9)).toFixed(0)),
+                            Number(((el.gas_price * el.gas_spent) / (10 ** 18)).toFixed(6)),
+                            Number((el.value_quote + el.gas_quote).toFixed(2)),
+                            Number(((el.value / (10 ** 18)) + ((el.gas_price * el.gas_spent) / (10 ** 18))).toFixed(6)),
+                        )
+                        tnx.push(JSON.parse(JSON.stringify(transaction)))
 
                     });
-                        console.timeEnd("filter Transactions");
-                        console.log("--------------------------------------");
-                        resolve(tnx)
+                    console.timeEnd("filter Transactions");
+                    console.log("--------------------------------------");
+                    resolve(tnx)
                 } else {
                     reject(data.error_message)
                 }

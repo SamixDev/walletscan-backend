@@ -53,7 +53,7 @@ async function getNfts(address, chain_id = 1) {
                             )
                         }
                     });
-                   // console.log(nfts_ids)
+                    // console.log(nfts_ids)
                     filterNFTs(nfts_ids, chain_id, address).then(res => {
                         console.timeEnd("filter NFTs");
                         console.log("--------------------------------------");
@@ -70,36 +70,36 @@ async function getNfts(address, chain_id = 1) {
 }
 
 //async function to add quote_percentage to the data
-async function filterNFTs(data, chain_id) {  
-        if (data.length > 0) {
-            let nftMeta = [];
-            let promises = data.map(i => {
-                return new Promise((resolve, reject) => {
-                    fetch(url + `${chain_id}/tokens/${i.contract_address}/nft_metadata/${i.id}/`)
-                        .then(response => response.json())
-                        .then(res => {
-                            console.log(res.data.items[0].nft_data[0].external_data.name)
-                            let eachNft = new NftData(
-                                res.data.items[0].nft_data[0].external_data.name,
-                                res.data.items[0].nft_data[0].external_data.description,
-                                res.data.items[0].nft_data[0].external_data.image,
-                            )
-                            nftMeta.push(JSON.parse(JSON.stringify(eachNft)))
-                            resolve();
-                        }).catch(err => {
-                            resolve();
-                        });
-                }).catch(err => {
-                    console.log("nft fetch err ", err)
-                    resolve();
-                })
+async function filterNFTs(data, chain_id) {
+    if (data.length > 0) {
+        let nftMeta = [];
+        let promises = data.map(i => {
+            return new Promise((resolve, reject) => {
+                fetch(url + `${chain_id}/tokens/${i.contract_address}/nft_metadata/${i.id}/`)
+                    .then(response => response.json())
+                    .then(res => {
+                        console.log(res.data.items[0].nft_data[0].external_data.name)
+                        let eachNft = new NftData(
+                            res.data.items[0].nft_data[0].external_data.name,
+                            res.data.items[0].nft_data[0].external_data.description,
+                            res.data.items[0].nft_data[0].external_data.image,
+                        )
+                        nftMeta.push(JSON.parse(JSON.stringify(eachNft)))
+                        resolve();
+                    }).catch(err => {
+                        resolve();
+                    });
+            }).catch(err => {
+                console.log("nft fetch err ", err)
+                resolve();
             })
-            return Promise.all(promises).then(() => {
-                return nftMeta;
-            });
-        } else {
+        })
+        return Promise.all(promises).then(() => {
+            return nftMeta;
+        });
+    } else {
 
-        }
+    }
 
 }
 
