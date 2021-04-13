@@ -57,6 +57,30 @@ function NftData(
     this.description = description;
     this.media_link = media_link;
 }
-// for transactions page
 
-module.exports = { Tokendata, History, NftData,NftCat }
+// for transactions page
+function TransactionsData(
+    time,
+    date,
+    tx_hash,
+    receiver,
+    description,
+    Amount,
+    gas_units,
+    gas_price,
+    total_balance,
+    total_quote,
+) {
+    this.time = time;
+    this.date = date;
+    this.tx_hash = tx_hash;
+    this.receiver = receiver;
+    this.description = description;
+    this.Amount = Amount;
+    this.gas_units = gas_units;
+    this.gas_price = gas_price;
+    this.total_balance = total_balance;
+    this.total_quote = total_quote;
+}
+
+module.exports = { Tokendata, History, NftData, NftCat, TransactionsData }
