@@ -5,6 +5,16 @@ exports.successResponse = function (res, msg) {
 	};
 	return res.status(200).json(data);
 };
+
+exports.successResponseTransactions = function (res, hasmore , msg) {
+	var data = {
+		status: 1,
+		has_more: hasmore,
+		message: msg
+	};
+	return res.status(200).json(data);
+};
+
 exports.errResponse = function (res, msg) {
 	var data = {
 		status: 0,
