@@ -91,7 +91,6 @@ async function createResp(tokens_data, decimal, arrTickers, currency) {
             let arr = []
 
             element.holdings.forEach(el => {
-
                 let eachHistoricalValue = new History(
                     el.timestamp,
                     Number((el.close.balance / (10 ** element.contract_decimals)).toFixed(decimal)),

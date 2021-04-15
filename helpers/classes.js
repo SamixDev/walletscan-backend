@@ -10,7 +10,7 @@ function Tokendata(
     change24h,
     change24h_percentage,
     quote_currency,
-    historycal_value
+    historycal_value,
 ) {
     this.contract_name = contract_name;
     this.contract_ticker_symbol = contract_ticker_symbol;
@@ -22,7 +22,7 @@ function Tokendata(
     this.change24h = change24h;
     this.change24h_percentage = change24h_percentage;
     this.quote_currency = quote_currency;
-    this.historycal_value = historycal_value
+    this.historycal_value = historycal_value;
 }
 
 function History(

@@ -6,10 +6,10 @@ exports.successResponse = function (res, msg) {
 	return res.status(200).json(data);
 };
 
-exports.successResponseTransactions = function (res, hasmore , msg) {
+exports.successResponseTransactions = function (res, total_tx , msg) {
 	var data = {
 		status: 1,
-		has_more: hasmore,
+		total_tx: total_tx,
 		message: msg
 	};
 	return res.status(200).json(data);

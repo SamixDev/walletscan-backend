@@ -38,19 +38,20 @@ async function getTransactions(address, chain_id = 1,page_size = 100 , page_numb
     return new Promise((resolve, reject) => {
         console.time("fetch Transactions time from covalent API");
         let tnx = [];
-        let has_more = false;
+        let total_tx = 0;
         fetch(url + `${chain_id}/address/${address}/transactions_v2/?page-number=${page_number}&page-size=${page_size}`)
             .then(response => response.json())
             .then(data => {
                 console.timeEnd("fetch Transactions time from covalent API");
                 console.time("filter Transactions");
                 if (data.data && data.data.items && data.error == false) {
-                    if (data.data.pagination && data.data.pagination.has_more === true) {
-                        has_more = true;
-                    } else {
-                        has_more = false;
-                    }
+                    // if (data.data.pagination && data.data.pagination.has_more === true) {
+                    //     has_more = true;
+                    // } else {
+                    //     has_more = false;
+                    // }
                     data.data.items.forEach(el => {
+                        total_tx++;
                         let transaction = new TransactionsData(
                             el.block_signed_at.slice(0, 10),
                             el.block_signed_at.slice(-9, -1) + " UTC",
@@ -69,10 +70,10 @@ async function getTransactions(address, chain_id = 1,page_size = 100 , page_numb
                     console.timeEnd("filter Transactions");
                     console.log("--------------------------------------");
                    // resolve(tnx)
-                    resolve({arg1: has_more, arg2: tnx})
+                    resolve({arg1: total_tx, arg2: tnx})
                 } else {
                  //   reject(data.error_message)
-                    reject({arg1: has_more, arg2: data.error_message})
+                    reject({arg1: total_tx, arg2: data.error_message})
                 }
 
             }).catch(error => {
