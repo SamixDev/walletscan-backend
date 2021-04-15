@@ -34,7 +34,7 @@ router.get('/transactions', (req, res) => {
     }
 });
 
-async function getTransactions(address, chain_id = 1, page_size = 100, page_number = 0) {
+async function getTransactions(address, chain_id = 1, page_size = 1000, page_number = 0) {
     return new Promise((resolve, reject) => {
         console.time("fetch Transactions time from covalent API");
         let tnx = [];
