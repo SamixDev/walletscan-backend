@@ -23,12 +23,12 @@ router.get('/transactions', (req, res) => {
         getTransactions(address, chain_id, page_size, page_number)
             .then(({ arg1, arg2 }) => {
                 if (arg2 === "") {
-                    apiResponse.errResponse(res, "No Data")
+                    apiResponse.failResponseTransactions(res, "No Data")
                 } else {
                     apiResponse.successResponseTransactions(res, arg1, arg2)
                 }
             }, reason => {
-                apiResponse.errResponse(res, reason)
+                apiResponse.failResponseTransactions(res, reason.arg2)
             });
 
     }

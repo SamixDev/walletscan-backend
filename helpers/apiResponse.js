@@ -15,6 +15,15 @@ exports.successResponseTransactions = function (res, total_tx , msg) {
 	return res.status(200).json(data);
 };
 
+exports.failResponseTransactions = function (res , msg) {
+	var data = {
+		status: 0,
+		total_tx: 0,
+		message: msg
+	};
+	return res.status(200).json(data);
+};
+
 exports.errResponse = function (res, msg) {
 	var data = {
 		status: 0,
