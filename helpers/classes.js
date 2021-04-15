@@ -60,9 +60,9 @@ function NftData(
 
 // for transactions page
 function TransactionsData(
-    time,
-    date,
+    time_date,
     tx_hash,
+    sender,
     receiver,
     amount,
     gas_units,
@@ -70,10 +70,13 @@ function TransactionsData(
     fee,
     total_balance,
     total_quote,
+    status,
+    tx_type,
+
 ) {
-    this.time = time;
-    this.date = date;
+    this.time_date = time_date;
     this.tx_hash = tx_hash;
+    this.sender = sender;
     this.receiver = receiver;
     this.amount = amount;
     this.gas_units = gas_units;
@@ -81,6 +84,8 @@ function TransactionsData(
     this.fee = fee;
     this.total_balance = total_balance;
     this.total_quote = total_quote;
+    this.status = status;
+    this.tx_type = tx_type;
 }
 
 module.exports = { Tokendata, History, NftData, NftCat, TransactionsData }

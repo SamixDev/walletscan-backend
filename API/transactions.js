@@ -39,27 +39,36 @@ async function getTransactions(address, chain_id = 1, page_size = 1000, page_num
         console.time("fetch Transactions time from covalent API");
         let tnx = [];
         let total_tx = 0;
-        fetch(url + `${chain_id}/address/${address}/transactions_v2/?page-number=${page_number}&page-size=${page_size}`)
+        let adr = 0;
+        fetch(url + `${chain_id}/address/${address}/transactions_v2/?page-number=${page_number}&page-size=${page_size}&no-logs=true`)
             .then(response => response.json())
             .then(data => {
                 console.timeEnd("fetch Transactions time from covalent API");
                 console.time("filter Transactions");
-                if (data.data && data.data.items && data.error == false) {
+                if (data.data && data.data.items && data.error == false ) {
+                    adr = data.data.address;
                     data.data.items.forEach(el => {
+                        if(el.from_address == data.data.address || el.to_address == data.data.address){
                         total_tx++;
                         let transaction = new TransactionsData(
-                            el.block_signed_at.slice(0, 10),
-                            el.block_signed_at.slice(-9, -1) + " UTC",
+                            el.block_signed_at,
                             el.tx_hash,
-                            el.to_address,
+                            el.from_address_label ?el.from_address_label: el.from_address,
+                            el.to_address_label ?el.to_address_label: el.to_address,
                             Number((el.value / (10 ** 18)).toFixed(6)),
                             el.gas_spent,
                             Number((el.gas_price / (10 ** 9)).toFixed(0)),
                             Number(((el.gas_price * el.gas_spent) / (10 ** 18)).toFixed(6)),
                             Number((el.value_quote + el.gas_quote).toFixed(2)),
                             Number(((el.value / (10 ** 18)) + ((el.gas_price * el.gas_spent) / (10 ** 18))).toFixed(6)),
-                        )
+                            el.successful,
+                            el.from_address == adr ? "out" : "in",
+                            )
                         tnx.push(JSON.parse(JSON.stringify(transaction)))
+
+                        }else{
+
+                        }
 
                     });
                     console.timeEnd("filter Transactions");
