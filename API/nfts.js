@@ -53,7 +53,6 @@ async function getNfts(address, chain_id = 1) {
                             )
                         }
                     });
-                    // console.log(nfts_ids)
                     filterNFTs(nfts_ids, chain_id, address).then(res => {
                         console.timeEnd("filter NFTs");
                         console.log("--------------------------------------");
@@ -78,7 +77,6 @@ async function filterNFTs(data, chain_id) {
                 fetch(url + `${chain_id}/tokens/${i.contract_address}/nft_metadata/${i.id}/`)
                     .then(response => response.json())
                     .then(res => {
-                        console.log(res.data.items[0].nft_data[0].external_data.name)
                         let eachNft = new NftData(
                             res.data.items[0].nft_data[0].external_data.name,
                             res.data.items[0].nft_data[0].external_data.description,

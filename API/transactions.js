@@ -21,7 +21,7 @@ router.get('/transactions', (req, res) => {
         page_size === undefined ? null : page_size = page_size.replace(/'|"/g, "")
 
         getTransactions(address, chain_id, page_size, page_number)
-            .then(({arg1, arg2}) => {
+            .then(({ arg1, arg2 }) => {
                 if (arg2 === "") {
                     apiResponse.errResponse(res, "No Data")
                 } else {
@@ -34,7 +34,7 @@ router.get('/transactions', (req, res) => {
     }
 });
 
-async function getTransactions(address, chain_id = 1,page_size = 100 , page_number = 0 ) {
+async function getTransactions(address, chain_id = 1, page_size = 100, page_number = 0) {
     return new Promise((resolve, reject) => {
         console.time("fetch Transactions time from covalent API");
         let tnx = [];
@@ -45,11 +45,6 @@ async function getTransactions(address, chain_id = 1,page_size = 100 , page_numb
                 console.timeEnd("fetch Transactions time from covalent API");
                 console.time("filter Transactions");
                 if (data.data && data.data.items && data.error == false) {
-                    // if (data.data.pagination && data.data.pagination.has_more === true) {
-                    //     has_more = true;
-                    // } else {
-                    //     has_more = false;
-                    // }
                     data.data.items.forEach(el => {
                         total_tx++;
                         let transaction = new TransactionsData(
@@ -69,15 +64,13 @@ async function getTransactions(address, chain_id = 1,page_size = 100 , page_numb
                     });
                     console.timeEnd("filter Transactions");
                     console.log("--------------------------------------");
-                   // resolve(tnx)
-                    resolve({arg1: total_tx, arg2: tnx})
+                    resolve({ arg1: total_tx, arg2: tnx })
                 } else {
-                 //   reject(data.error_message)
-                    reject({arg1: total_tx, arg2: data.error_message})
+                    reject({ arg1: total_tx, arg2: data.error_message })
                 }
 
             }).catch(error => {
-                resolve({arg1: false, arg2: ""})
+                resolve({ arg1: false, arg2: "" })
                 throw error;
             });
 
