@@ -53,7 +53,7 @@ async function getNfts(address, chain_id = 1) {
                             )
                         }
                     });
-                    filterNFTs(nfts_ids, chain_id, address).then(res => {
+                    filterNFTs(nfts_ids, chain_id).then(res => {
                         console.timeEnd("filter NFTs");
                         console.log("--------------------------------------");
                         resolve(res)
@@ -68,7 +68,7 @@ async function getNfts(address, chain_id = 1) {
     });
 }
 
-//async function to add quote_percentage to the data
+//async function to get nft metadata and filter them
 async function filterNFTs(data, chain_id) {
     if (data.length > 0) {
         let nftMeta = [];

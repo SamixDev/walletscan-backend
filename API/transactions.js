@@ -61,7 +61,9 @@ async function getTransactions(address, chain_id = 1, page_size = 1000, page_num
                             let transaction = new TransactionsData(
                                 el.block_signed_at,
                                 el.tx_hash,
+                                el.from_address,
                                 el.from_address_label ? el.from_address_label : el.from_address,
+                                el.to_address,
                                 el.to_address_label ? el.to_address_label : el.to_address,
                                 Number((el.value / (10 ** 18)).toFixed(6)),
                                 el.gas_spent,

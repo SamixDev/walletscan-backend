@@ -63,7 +63,9 @@ function TransactionsData(
     timestamp,
     tx_hash,
     sender,
+    sender_name,
     receiver,
+    receiver_name,
     amount,
     gas_units,
     gas_price,
@@ -77,7 +79,9 @@ function TransactionsData(
     this.timestamp = timestamp;
     this.tx_hash = tx_hash;
     this.sender = sender;
+    this.sender_name = sender_name;
     this.receiver = receiver;
+    this.receiver_name = receiver_name;
     this.amount = amount;
     this.gas_units = gas_units;
     this.gas_price = gas_price;
