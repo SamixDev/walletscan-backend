@@ -6,10 +6,13 @@ exports.successResponse = function (res, msg) {
 	return res.status(200).json(data);
 };
 
-exports.successResponseTransactions = function (res, total_tx , msg) {
+exports.successResponseTransactions = function (res, total_tx,total_fee,total_in ,total_out , msg) {
 	var data = {
 		status: 1,
 		total_tx: total_tx,
+		total_fee: total_fee,
+		total_in: total_in,
+		total_out: total_out,
 		message: msg
 	};
 	return res.status(200).json(data);
@@ -19,6 +22,9 @@ exports.failResponseTransactions = function (res , msg) {
 	var data = {
 		status: 0,
 		total_tx: 0,
+		total_fee: 0,
+		total_in: 0,
+		total_out: 0,
 		message: msg
 	};
 	return res.status(200).json(data);

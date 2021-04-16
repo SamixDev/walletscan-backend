@@ -60,7 +60,7 @@ function NftData(
 
 // for transactions page
 function TransactionsData(
-    time_date,
+    timestamp,
     tx_hash,
     sender,
     receiver,
@@ -74,7 +74,7 @@ function TransactionsData(
     tx_type,
 
 ) {
-    this.time_date = time_date;
+    this.timestamp = timestamp;
     this.tx_hash = tx_hash;
     this.sender = sender;
     this.receiver = receiver;
