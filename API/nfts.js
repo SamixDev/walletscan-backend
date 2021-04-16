@@ -72,8 +72,9 @@ async function getNfts(address, chain_id = 1) {
 async function filterNFTs(data, chain_id) {
     if (data.length > 0) {
         let nftMeta = [];
-        let promises = data.map(i => {
+        let promises = data.map((i,index) => {
             return new Promise((resolve, reject) => {
+                setTimeout(function(){
                 fetch(url + `${chain_id}/tokens/${i.contract_address}/nft_metadata/${i.id}/`)
                     .then(response => response.json())
                     .then(res => {
@@ -87,6 +88,7 @@ async function filterNFTs(data, chain_id) {
                     }).catch(err => {
                         resolve();
                     });
+                },index* 50);
             }).catch(err => {
                 console.log("nft fetch err ", err)
                 resolve();
