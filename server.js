@@ -1,6 +1,6 @@
 const express = require('express');
 const envVar = require('dotenv').config() //dotenv npm package to load environment variables from .env file
-const port = envVar.parsed.Server_Port || 6000; //port nb from env var or 3000 if not exist
+const port = envVar.parsed.Server_Port || 7000; //port nb from env var or 3000 if not exist
 const app = express();
 const path = require('path');
 const apiResponse = require("./helpers/apiResponse");
@@ -13,12 +13,12 @@ app.use('/api', portfolio);
 app.use('/api', nfts);
 app.use('/api', transactions);
 app.use(express.json());
-app.use(express.static("pages"));
+app.use(express.static("frontend/etherfolio/build"));
 
 // serving webpage files
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/pages/index.html'));
-});
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, '/frontend/etherfolio/build/' ,'index.html'));
+// });
 
 // throw 404 if URL not found
 app.all("*", function (req, res) {
