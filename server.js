@@ -16,9 +16,9 @@ app.use(express.json());
 app.use(express.static("frontend/etherfolio/build"));
 
 // serving webpage files
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, '/frontend/etherfolio/build/' ,'index.html'));
-// });
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/frontend/etherfolio/build/' ,'index.html'));
+});
 
 // throw 404 if URL not found
 app.all("*", function (req, res) {
