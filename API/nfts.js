@@ -35,7 +35,7 @@ async function getNfts(address, chain_id = 1) {
     return new Promise((resolve, reject) => {
         console.time("fetch NFT time from covalent API");
         let nfts_ids = [];
-        fetch(url + `${chain_id}/address/${address}/balances_v2/?nft=true&no-nft-fetch=true`)
+        fetch(url + `${chain_id}/address/${address}/balances_v2/?nft=true`)
             .then(response => response.json())
             .then(data => {
                 console.timeEnd("fetch NFT time from covalent API");
