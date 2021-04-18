@@ -52,10 +52,12 @@ function NftData(
     title,
     description,
     media_link,
+    token_id,
 ) {
     this.title = title;
     this.description = description;
     this.media_link = media_link;
+    this.token_id = token_id;
 }
 
 // for transactions page

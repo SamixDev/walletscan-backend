@@ -82,6 +82,7 @@ async function filterNFTs(data, chain_id) {
                             res.data.items[0].nft_data[0].external_data.name,
                             res.data.items[0].nft_data[0].external_data.description,
                             res.data.items[0].nft_data[0].external_data.image,
+                            res.data.items[0].nft_data[0].token_id,
                         )
                         nftMeta.push(JSON.parse(JSON.stringify(eachNft)))
                         resolve();
