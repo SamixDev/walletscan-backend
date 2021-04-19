@@ -56,12 +56,13 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                             quotePercentages(res2, decimal).then(res3 => {
                                 standardDeviation(res3, decimal).then(res4 => {
                                     console.timeEnd("creating percentages (my code)");
-                                    console.time("image check time from covalent API");
-                                    checkImages(res4).then(res5 => {
-                                        console.timeEnd("image check time from covalent API");
-                                        console.log("--------------------------------------");
-                                        resolve(res5)
-                                    })
+                                 //   console.time("image check time from covalent API");
+                                    resolve(res4)
+                                    // checkImages(res4).then(res5 => {
+                                    //     console.timeEnd("image check time from covalent API");
+                                    //     console.log("--------------------------------------");
+                                    //     resolve(res5)
+                                    // })
                                 })
                             })
 
@@ -220,36 +221,36 @@ async function standardDeviation(tokens_data, decimal) {
 }
 
 //check if image valid
-async function checkImages(data) {
-    if (data !== "") {
-        let promises = data.map(i => {
-            if (!(i.logo_url == "")) {
-                return new Promise((resolve, reject) => {
-                    fetch(i.logo_url, { method: 'HEAD' })
-                        .then(res => {
-                            if (res.ok) {
-                                resolve();
-                            } else {
-                                i.logo_url = ""
-                                resolve();
-                            }
-                        }).catch(err => {
-                            console.log('Error:', err)
-                            i.logo_url = ""
-                            resolve();
-                        });
-                }).catch(err => {
-                    console.log("image fetch err ", err)
-                    resolve();
-                })
-            }
-        })
-        return Promise.all(promises).then(() => {
-            return data;
-        });
-    } else {
+// async function checkImages(data) {
+//     if (data !== "") {
+//         let promises = data.map(i => {
+//             if (!(i.logo_url == "")) {
+//                 return new Promise((resolve, reject) => {
+//                     fetch(i.logo_url, { method: 'HEAD' })
+//                         .then(res => {
+//                             if (res.ok) {
+//                                 resolve();
+//                             } else {
+//                                 i.logo_url = ""
+//                                 resolve();
+//                             }
+//                         }).catch(err => {
+//                             console.log('Error:', err)
+//                             i.logo_url = ""
+//                             resolve();
+//                         });
+//                 }).catch(err => {
+//                     console.log("image fetch err ", err)
+//                     resolve();
+//                 })
+//             }
+//         })
+//         return Promise.all(promises).then(() => {
+//             return data;
+//         });
+//     } else {
 
-    }
-}
+//     }
+// }
 
 module.exports = router;
