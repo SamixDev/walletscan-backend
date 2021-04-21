@@ -56,7 +56,7 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
                             quotePercentages(res2, decimal).then(res3 => {
                                 standardDeviation(res3, decimal).then(res4 => {
                                     console.timeEnd("creating percentages (my code)");
-                                 //   console.time("image check time from covalent API");
+                                    //   console.time("image check time from covalent API");
                                     resolve(res4)
                                     // checkImages(res4).then(res5 => {
                                     //     console.timeEnd("image check time from covalent API");

@@ -54,9 +54,9 @@ async function getTransactions(address, chain_id = 1, page_size = 1000, page_num
                         if (el.from_address == data.data.address || el.to_address == data.data.address) {
 
                             total_tx++;
-                            total_fee +=el.from_address == adr ? Number(((el.gas_price * el.gas_spent) / (10 ** 18)).toFixed(6)) : 0,
-                            total_in += el.from_address == adr ? 0 : Number((el.value / (10 ** 18)).toFixed(6)) ,
-                            total_out += el.from_address == adr ? Number(((el.value / (10 ** 18)) + ((el.gas_price * el.gas_spent) / (10 ** 18))).toFixed(6)) :0 ;
+                            total_fee += el.from_address == adr ? Number(((el.gas_price * el.gas_spent) / (10 ** 18)).toFixed(6)) : 0,
+                                total_in += el.from_address == adr ? 0 : Number((el.value / (10 ** 18)).toFixed(6)),
+                                total_out += el.from_address == adr ? Number(((el.value / (10 ** 18)) + ((el.gas_price * el.gas_spent) / (10 ** 18))).toFixed(6)) : 0;
 
                             let transaction = new TransactionsData(
                                 el.block_signed_at,
