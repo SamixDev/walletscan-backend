@@ -43,7 +43,7 @@ async function getTransactions(address, chain_id = 1, page_size = 1000, page_num
         let total_in = 0;
         let total_out = 0;
         let adr = 0;
-        fetch(url + `${chain_id}/address/${address}/transactions_v2/?page-number=${page_number}&page-size=${page_size}&no-logs=true`)
+        fetch(url + `${chain_id}/address/${address}/transactions_v2/?page-number=${page_number}&page-size=${page_size}&no-logs=true&key=${key}`)
             .then(response => response.json())
             .then(data => {
                 console.timeEnd("fetch Transactions time from covalent API");

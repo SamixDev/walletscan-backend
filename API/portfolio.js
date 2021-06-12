@@ -40,7 +40,7 @@ async function sendTokens(address, chain_id = 1, currency = "usd", decimal = 5) 
 
         let arrTickers = [];
         console.time("fetch Protfolio from covalent API");
-        fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}`)
+        fetch(url + `${chain_id}/address/${address}/portfolio_v2/?quote-currency=${currency}&key=${key}`)
             .then(response => response.json())
             .then(data => {
                 if (!data.error) {
