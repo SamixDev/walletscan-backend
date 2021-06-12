@@ -1,6 +1,6 @@
 const express = require('express');
 const envVar = require('dotenv').config() //dotenv npm package to load environment variables from .env file
-const port = envVar.parsed.Server_Port || 7000; //port nb from env var or 7000 if not exist
+const port = envVar.parsed.Server_Port || 1300; //port nb from env var or 7000 if not exist
 const app = express();
 const path = require('path');
 const apiResponse = require("./helpers/apiResponse");
